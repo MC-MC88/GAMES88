@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SIMON88 | Memory Sequence</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@700;900&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    /* --- 5 THEMES (Reused from CF88) --- */
+    :root {
+      /* Theme 1: Harvest (Sunflowers / Woodblock Print) */
+      --bg: #2b1f14;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #4a3524 0%, #1a110a 100%);
+      --text-main: #f4e8d1;
+      --text-accent: #e6a817;
+      --text-muted: #a68864;
+      --btn1: #e6a817; /* Gold */
+      --btn2: #8c6a3d; /* Brown */
+      --btn3: #5c7a3e; /* Olive */
+      --btn4: #c0392b; /* Dark Red */
+      --matched-border: #4caf50;
+      --matched-bg: #2e7d32;
+      --btn-bg: #4a3524;
+      --btn-border: #8c6a3d;
+      --header-font: 'Cinzel', serif;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #e6a817;
+    }
+
+    [data-theme="midnight"] {
+      /* Theme 2: Midnight (Gothic Moon / Spooky) */
+      --bg: #0d1321;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #1d2d44 0%, #05080e 100%);
+      --text-main: #e0e1dd;
+      --text-accent: #fde74c;
+      --text-muted: #778da9;
+      --btn1: #fde74c; /* Moon Yellow */
+      --btn2: #4a6fa5; /* Deep Blue */
+      --btn3: #7b2cbf; /* Purple */
+      --btn4: #2a9d8f; /* Teal */
+      --matched-border: #4caf50;
+      --matched-bg: #2e7d32;
+      --btn-bg: #1d2d44;
+      --btn-border: #415a77;
+      --header-font: 'Special Elite', monospace;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #fde74c;
+    }
+
+    [data-theme="noir"] {
+      /* Theme 3: Noir (Red & Black) */
+      --bg: #121212;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #2a2a2a 0%, #050505 100%);
+      --text-main: #f0f0f0;
+      --text-accent: #e63946;
+      --text-muted: #888888;
+      --btn1: #e63946; /* Red */
+      --btn2: #333333; /* Dark Grey */
+      --btn3: #555555; /* Grey */
+      --btn4: #8b0000; /* Blood Red */
+      --matched-border: #4caf50;
+      --matched-bg: #2e7d32;
+      --btn-bg: #1f1f1f;
+      --btn-border: #e63946;
+      --header-font: 'Cinzel', serif;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #e63946;
+    }
+
+    [data-theme="whimsical"] {
+      /* Theme 4: Whimsical (Storybook Illustration) */
+      --bg: #f4f1ea;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #ffffff 0%, #dcd5c4 100%);
+      --text-main: #2c3e50;
+      --text-accent: #4a6fa5;
+      --text-muted: #7f8c8d;
+      --btn1: #4a6fa5; /* Blue */
+      --btn2: #e67e22; /* Orange */
+      --btn3: #27ae60; /* Green */
+      --btn4: #c0392b; /* Red */
+      --matched-border: #27ae60;
+      --matched-bg: #2ecc71;
+      --btn-bg: #4a6fa5;
+      --btn-border: #2c3e50;
+      --header-font: 'Cinzel', serif;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #4a6fa5, 4px 4px 0 #2c3e50;
+    }
+
+    [data-theme="retro"] {
+      /* Theme 5: Retro Print (70s Orange & Teal) */
+      --bg: #003049;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #005f73 0%, #001219 100%);
+      --text-main: #e9d8a6;
+      --text-accent: #ee9b00;
+      --text-muted: #94d2bd;
+      --btn1: #ee9b00; /* Orange */
+      --btn2: #0a9396; /* Teal */
+      --btn3: #ca6702; /* Mustard */
+      --btn4: #ae2012; /* Dark Red */
+      --matched-border: #2ecc71;
+      --matched-bg: #27ae60;
+      --btn-bg: #0a9396;
+      --btn-border: #ee9b00;
+      --header-font: 'Special Elite', monospace;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #ee9b00;
+    }
+
+    /* --- RESET & BASE --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: var(--body-font);
+      background-color: var(--bg);
+      background-image: var(--bg-pattern);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.5s ease;
+      overflow-x: hidden;
+      padding: 10px;
+      position: relative;
+    }
+
+    /* Vintage Grain overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      margin-top: 10px;
+      gap: 10px;
+      background: rgba(0,0,0,0.2);
+      border: 2px solid var(--btn-border);
+      border-radius: 8px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      font-family: var(--header-font);
+      font-size: 2.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-accent);
+      text-shadow: var(--logo-shadow);
+      text-align: center;
+      line-height: 1;
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .theme-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 3px solid var(--btn-border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.5);
+    }
+    .theme-btn:hover { transform: scale(1.1); }
+    .theme-btn:active { transform: translateY(3px); box-shadow: 0 0 0 rgba(0,0,0,0.5); }
+    .theme-btn.harvest { background: #e6a817; }
+    .theme-btn.midnight { background: #fde74c; }
+    .theme-btn.noir { background: #e63946; }
+    .theme-btn.whimsical { background: #4a6fa5; }
+    .theme-btn.retro { background: #ee9b00; }
+
+    /* Scoreboard */
+    .scoreboard {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .score-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--btn-bg);
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: 2px solid var(--btn-border);
+      min-width: 120px;
+    }
+
+    .score-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .score-value {
+      font-family: var(--header-font);
+      font-size: 1.8rem;
+      color: var(--text-accent);
+    }
+
+    /* Game Board */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .status-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-align: center;
+      min-height: 1.5em;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+    }
+
+    .simon-btn {
+      border-radius: 12px;
+      border: 4px solid var(--btn-border);
+      cursor: pointer;
+      transition: all 0.1s ease;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .simon-btn:active {
+      transform: translateY(8px);
+      box-shadow: 0 0 0 rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.6);
+    }
+
+    /* Unique colors for the 4 buttons using CSS variables */
+    .simon-btn[data-id="0"] { background: var(--btn1); }
+    .simon-btn[data-id="1"] { background: var(--btn2); }
+    .simon-btn[data-id="2"] { background: var(--btn3); }
+    .simon-btn[data-id="3"] { background: var(--btn4); }
+
+    /* Flash animation for computer sequence */
+    .simon-btn.flash {
+      filter: brightness(2.5);
+      box-shadow: 0 0 30px 10px rgba(255,255,255,0.5), inset 0 0 50px rgba(255,255,255,0.5);
+      transform: scale(0.98);
+    }
+
+    /* Player click feedback */
+    .simon-btn.active {
+      filter: brightness(1.5);
+      box-shadow: 0 0 20px 5px rgba(255,255,255,0.3), inset 0 0 30px rgba(255,255,255,0.3);
+      transform: translateY(4px);
+    }
+
+    /* Wrong answer shake */
+    .simon-btn.error {
+      background: #e74c3c !important;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+    }
+
+    /* Inner circle decoration */
+    .simon-btn::after {
+      content: '';
+      width: 30%;
+      height: 30%;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.1);
+      border: 3px solid rgba(0,0,0,0.2);
+      position: absolute;
+    }
+
+    /* Controls */
+    .controls {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .action-btn {
+      padding: 15px 30px;
+      background: var(--btn-bg);
+      color: var(--text-main);
+      border: 3px solid var(--btn-border);
+      border-radius: 8px;
+      font-family: var(--body-font);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--btn-border);
+      transition: all 0.1s;
+      text-transform: uppercase;
+      width: 100%;
+    }
+
+    .action-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 var(--btn-border);
+    }
+
+    .action-btn.start {
+      background: var(--text-accent);
+      border-color: #000;
+      box-shadow: 0 5px 0 #000;
+      color: #fff;
+    }
+
+    .action-btn.start:active {
+      box-shadow: 0 0 0 #000;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: translateY(5px);
+      box-shadow: 0 0 0 var(--btn-border);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg);
+      padding: 40px 30px;
+      border-radius: 8px;
+      text-align: center;
+      border: 4px solid var(--text-accent);
+      box-shadow: 0 15px 0 rgba(0,0,0,0.8);
+      transform: scale(0.8);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 90vw;
+      position: relative;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-content h2 {
+      font-family: var(--header-font);
+      font-size: 2.2rem;
+      color: var(--text-accent);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      text-shadow: var(--logo-shadow);
+    }
+
+    .modal-content p {
+      font-family: var(--body-font);
+      font-size: 1.2rem;
+      color: var(--text-main);
+      margin-bottom: 25px;
+    }
+
+    .modal-content button {
+      padding: 15px 30px;
+      background: var(--text-accent);
+      color: #fff;
+      border: 3px solid #000;
+      border-radius: 6px;
+      font-family: var(--body-font);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #000;
+      text-transform: uppercase;
+      width: 100%;
+    }
+
+    .modal-content button:active {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 #000;
+    }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 15px 10px;
+      font-family: var(--body-font);
+      font-size: 0.8rem;
+      color: var(--text-main);
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      margin-top: auto;
+      border-top: 2px solid var(--btn-border);
+    }
+
+    footer pre {
+      font-family: monospace;
+      font-size: 0.6rem;
+      margin-top: 5px;
+      white-space: pre;
+      overflow-x: auto;
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      h1 { font-size: 2.2rem; }
+      .game-grid { max-width: 320px; gap: 10px; }
+      .score-item { min-width: 100px; padding: 6px 15px; }
+      .score-value { font-size: 1.5rem; }
+      .status-text { font-size: 0.9rem; }
+      .action-btn { font-size: 0.9rem; padding: 12px; }
+    }
+  </style>
+</head>
+<body data-theme="harvest">
+
+  <header>
+    <h1>SIMON88</h1>
+    <div class="theme-switcher">
+      <button class="theme-btn harvest" data-theme="harvest" title="Harvest Sunflowers"></button>
+      <button class="theme-btn midnight" data-theme="midnight" title="Midnight Gothic"></button>
+      <button class="theme-btn noir" data-theme="noir" title="Noir Red & Black"></button>
+      <button class="theme-btn whimsical" data-theme="whimsical" title="Whimsical Storybook"></button>
+      <button class="theme-btn retro" data-theme="retro" title="Retro Print"></button>
+    </div>
+    
+    <div class="scoreboard">
+      <div class="score-item">
+        <span class="score-label">Score</span>
+        <span class="score-value" id="currentScore">0</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">High Score</span>
+        <span class="score-value" id="highScore">0</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="status-text" id="statusText">Press Start</div>
+    
+    <div class="game-grid" id="gameGrid">
+      <div class="simon-btn" data-id="0"></div>
+      <div class="simon-btn" data-id="1"></div>
+      <div class="simon-btn" data-id="2"></div>
+      <div class="simon-btn" data-id="3"></div>
+    </div>
+
+    <div class="controls">
+      <button class="action-btn start" id="startBtn">Start Game</button>
+    </div>
+  </main>
+
+  <footer>
+    <div>mohamed005cheikh@gmail.com | by MC88</div>
+    <pre>
+█   █  ███   ███   ███
+██ ██ █     █   █ █   █
+█ █ █ █      ███   ███
+█   █ █     █   █ █   █
+█   █  ███   ███   ███
+    </pre>
+  </footer>
+
+  <div class="modal" id="gameOverModal">
+    <div class="modal-content">
+      <h2>Game Over</h2>
+      <p id="gameOverMessage">You made it to round 5!</p>
+      <button id="playAgainBtn">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    // =============================================
+    // SIMON88 - Memory Sequence Game
+    // =============================================
+
+    const buttons = document.querySelectorAll('.simon-btn');
+    const startBtn = document.getElementById('startBtn');
+    const statusText = document.getElementById('statusText');
+    const currentScoreEl = document.getElementById('currentScore');
+    const highScoreEl = document.getElementById('highScore');
+    const gameOverModal = document.getElementById('gameOverModal');
+    const gameOverMessage = document.getElementById('gameOverMessage');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+
+    let sequence = [];
+    let playerSequence = [];
+    let isPlaying = false; // Is the computer playing the sequence?
+    let canClick = false;   // Can the player click?
+    let currentScore = 0;
+    let highScore = 0;
+    let flashSpeed = 600; // Start speed in ms
+
+    // Web Audio API Synthesizer
+    let audioCtx = null;
+    const frequencies = [261.63, 329.63, 392.00, 493.88]; // C4, E4, G4, B4
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(index) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.value = frequencies[index];
+      
+      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    // --- Initialization ---
+    function init() {
+      // Load High Score
+      const storedHighScore = localStorage.getItem('simon88_highscore');
+      if (storedHighScore) {
+        highScore = parseInt(storedHighScore);
+        highScoreEl.textContent = highScore;
+      }
+
+      // Theme Switcher
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.body.setAttribute('data-theme', btn.dataset.theme);
+        });
+      });
+
+      // Event Listeners for Game Buttons
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => handlePlayerClick(btn));
+      });
+
+      startBtn.addEventListener('click', startGame);
+      playAgainBtn.addEventListener('click', startGame);
+    }
+
+    // --- Game Logic ---
+    function startGame() {
+      initAudio(); // Initialize audio on first user interaction
+      
+      sequence = [];
+      playerSequence = [];
+      currentScore = 0;
+      flashSpeed = 600;
+      currentScoreEl.textContent = currentScore;
+      gameOverModal.classList.remove('show');
+      
+      startBtn.disabled = true;
+      statusText.textContent = "Get Ready...";
+      
+      setTimeout(() => {
+        nextRound();
+      }, 500);
+    }
+
+    function nextRound() {
+      currentScore++;
+      currentScoreEl.textContent = currentScore;
+      playerSequence = [];
+      canClick = false;
+      
+      // Add a new random step to the sequence
+      const randomIndex = Math.floor(Math.random() * 4);
+      sequence.push(randomIndex);
+      
+      // Play the sequence
+      statusText.textContent = "Watch...";
+      playSequence();
+    }
+
+    function playSequence() {
+      isPlaying = true;
+      let i = 0;
+      
+      const interval = setInterval(() => {
+        const index = sequence[i];
+        flashButton(index);
+        
+        i++;
+        if (i >= sequence.length) {
+          clearInterval(interval);
+          setTimeout(() => {
+            isPlaying = false;
+            canClick = true;
+            statusText.textContent = "Your Turn!";
+          }, flashSpeed / 2);
+        }
+      }, flashSpeed);
+    }
+
+    function flashButton(index) {
+      const btn = buttons[index];
+      btn.classList.add('flash');
+      playTone(index);
+      
+      setTimeout(() => {
+        btn.classList.remove('flash');
+      }, flashSpeed / 2);
+    }
+
+    function handlePlayerClick(btn) {
+      if (!canClick || isPlaying) return;
+      
+      const index = parseInt(btn.dataset.id);
+      
+      // Visual & Audio Feedback
+      btn.classList.add('active');
+      playTone(index);
+      
+      setTimeout(() => {
+        btn.classList.remove('active');
+      }, 200);
+      
+      playerSequence.push(index);
+      
+      // Check if the player's move matches the sequence so far
+      const currentStep = playerSequence.length - 1;
+      if (playerSequence[currentStep] !== sequence[currentStep]) {
+        // Wrong move
+        gameOver();
+        return;
+      }
+      
+      // Check if the player completed the sequence
+      if (playerSequence.length === sequence.length) {
+        canClick = false;
+        statusText.textContent = "Correct!";
+        
+        // Speed up the game slightly
+        if (flashSpeed > 300) {
+          flashSpeed -= 50;
+        }
+        
+        setTimeout(() => {
+          nextRound();
+        }, 1000);
+      }
+    }
+
+    function gameOver() {
+      canClick = false;
+      isPlaying = false;
+      
+      // Play error sound
+      if (audioCtx) {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5);
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      }
+
+      // Visual shake on all buttons
+      buttons.forEach(btn => btn.classList.add('error'));
+      statusText.textContent = "Game Over!";
+      
+      // Update High Score
+      if (currentScore > highScore) {
+        highScore = currentScore;
+        highScoreEl.textContent = highScore;
+        localStorage.setItem('simon88_highscore', highScore);
+        gameOverMessage.textContent = `New High Score! You reached round ${currentScore}.`;
+      } else {
+        gameOverMessage.textContent = `You reached round ${currentScore}. High score is ${highScore}.`;
+      }
+      
+      // Show Modal after a brief delay
+      setTimeout(() => {
+        buttons.forEach(btn => btn.classList.remove('error'));
+        gameOverModal.classList.add('show');
+        startBtn.disabled = false;
+        startBtn.textContent = "Start Game";
+      }, 800);
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>

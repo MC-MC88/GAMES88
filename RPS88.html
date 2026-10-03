@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>RPS88 | Vintage Arcade</title>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Rye&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Speakeasy (Dark) Theme - Default */
+      --bg-color: #1a1412;
+      --bg-pattern: radial-gradient(circle at 50% 50%, #2a1d18 0%, #110c0a 100%);
+      --card-bg: #2c1e1a;
+      --wood-light: #4a322a;
+      --wood-dark: #1f1310;
+      --text-color: #f4e9d8;
+      --accent-gold: #d4af37;
+      --accent-gold-dark: #997a22;
+      --accent-red: #8c1c1c;
+      --accent-green: #2b4a3b;
+      --shadow: rgba(0, 0, 0, 0.7);
+      --modal-bg: rgba(26, 20, 18, 0.95);
+      --border-metal: #8a7a60;
+    }
+
+    [data-theme="light"] {
+      /* Daylight (Sepia) Theme */
+      --bg-color: #e8dcc8;
+      --bg-pattern: radial-gradient(circle at 50% 50%, #f0e6d2 0%, #d4c3a3 100%);
+      --card-bg: #f4e9d8;
+      --wood-light: #d4b48c;
+      --wood-dark: #a68a64;
+      --text-color: #2b1b17;
+      --accent-gold: #b8860b;
+      --accent-gold-dark: #8b6508;
+      --accent-red: #a52a2a;
+      --accent-green: #3b5e4c;
+      --shadow: rgba(43, 27, 23, 0.3);
+      --modal-bg: rgba(244, 233, 216, 0.95);
+      --border-metal: #6b5b45;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Courier Prime', monospace;
+      background-color: var(--bg-color);
+      background-image: var(--bg-pattern);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+      padding: 10px;
+      /* Vintage film grain effect */
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 10px;
+      margin-top: 10px;
+      background: var(--card-bg);
+      border: 4px solid var(--wood-dark);
+      border-radius: 8px;
+      box-shadow: 
+        0 10px 0 var(--wood-dark),
+        inset 0 2px 5px rgba(255,255,255,0.1),
+        inset 0 -2px 5px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    /* Art Deco corner accents */
+    header::before, header::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      border: 3px solid var(--accent-gold);
+      top: 5px;
+    }
+    header::before { left: 5px; border-right: none; border-bottom: none; }
+    header::after { right: 5px; border-left: none; border-bottom: none; }
+
+    h1 {
+      font-family: 'Rye', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      text-shadow: 2px 2px 0 var(--wood-dark), 4px 4px 0 rgba(0,0,0,0.5);
+      margin-left: 10px;
+    }
+
+    h1 span {
+      color: var(--accent-red);
+      font-size: 1.5rem;
+    }
+
+    #themeToggle {
+      background: var(--wood-light);
+      border: 3px solid var(--wood-dark);
+      color: var(--accent-gold);
+      font-size: 1.2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 
+        0 6px 0 var(--wood-dark),
+        inset 0 2px 5px rgba(255,255,255,0.2);
+      transition: transform 0.1s, background 0.3s;
+      padding: 0;
+      margin-right: 10px;
+      position: relative;
+    }
+
+    #themeToggle svg {
+      width: 28px;
+      height: 28px;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+    }
+
+    #themeToggle:active {
+      transform: translateY(4px);
+      box-shadow: 
+        0 2px 0 var(--wood-dark),
+        inset 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+
+    .scoreboard {
+      display: flex;
+      gap: 20px;
+      background: var(--wood-dark);
+      padding: 15px 30px;
+      border-radius: 12px;
+      box-shadow: 
+        0 8px 0 #000,
+        inset 0 0 10px rgba(0,0,0,0.8);
+      border: 4px solid var(--border-metal);
+      font-weight: 700;
+      font-size: 1.2rem;
+      position: relative;
+    }
+
+    /* Rivets on scoreboard */
+    .scoreboard::before, .scoreboard::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle, #fff, #666);
+      border-radius: 50%;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+    }
+    .scoreboard::before { top: 8px; left: 8px; }
+    .scoreboard::after { top: 8px; right: 8px; }
+
+    .score-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      background: #111;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 2px solid var(--accent-gold-dark);
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+      min-width: 100px;
+    }
+
+    .score-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 5px var(--accent-gold-dark);
+    }
+
+    .score-value {
+      font-family: 'Courier Prime', monospace;
+      font-size: 2rem;
+      color: #fff;
+      text-shadow: 0 0 10px #fff, 0 0 20px var(--accent-gold);
+    }
+
+    .arena {
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 
+        0 12px 0 var(--wood-dark),
+        inset 0 5px 15px rgba(0,0,0,0.5);
+      border: 6px solid var(--wood-dark);
+      position: relative;
+      transition: background 0.4s ease;
+    }
+
+    /* Art Deco frame inside arena */
+    .arena::before {
+      content: '';
+      position: absolute;
+      top: 8px; left: 8px; right: 8px; bottom: 8px;
+      border: 2px solid var(--accent-gold-dark);
+      border-radius: 8px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .choice-box {
+      width: 120px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-color);
+      border-radius: 12px;
+      border: 4px solid var(--wood-light);
+      box-shadow: 
+        inset 0 10px 20px rgba(0,0,0,0.8),
+        0 4px 0 var(--wood-dark);
+      transition: transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .choice-box svg {
+      width: 90px;
+      height: 90px;
+      filter: drop-shadow(4px 6px 4px rgba(0,0,0,0.6));
+    }
+
+    .choice-box.shake {
+      animation: shake 0.4s ease-in-out infinite;
+    }
+
+    .choice-box.pop {
+      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      25% { transform: translateY(-15px) rotate(-8deg); }
+      75% { transform: translateY(15px) rotate(8deg); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .result-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-align: center;
+      width: 90%;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      direction: auto;
+      text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+      z-index: 10;
+    }
+
+    .controls {
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .control-btn {
+      flex: 1;
+      padding: 15px 0;
+      font-size: 2.5rem;
+      background: var(--wood-light);
+      border: 4px solid var(--wood-dark);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 
+        0 8px 0 var(--wood-dark),
+        inset 0 2px 5px rgba(255,255,255,0.2);
+      transition: all 0.1s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .control-btn svg {
+      width: 60px;
+      height: 60px;
+      filter: drop-shadow(2px 4px 2px rgba(0,0,0,0.5));
+      transition: transform 0.2s;
+    }
+
+    .control-btn:hover svg {
+      transform: scale(1.1);
+    }
+
+    .control-btn:active {
+      transform: translateY(6px);
+      box-shadow: 
+        0 2px 0 var(--wood-dark),
+        inset 0 4px 10px rgba(0,0,0,0.8);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: translateY(6px);
+      box-shadow: 
+        0 2px 0 var(--wood-dark),
+        inset 0 4px 10px rgba(0,0,0,0.8);
+    }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 20px 10px;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-gold-dark);
+      font-weight: 700;
+      letter-spacing: 1px;
+      border-top: 2px dashed var(--wood-dark);
+      margin-top: 20px;
+    }
+
+    footer pre {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem; 
+      margin-top: 10px; 
+      white-space: pre; 
+      overflow-x: auto; 
+      opacity: 0.7;
+      color: var(--accent-red);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--modal-bg);
+      padding: 40px 30px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 
+        0 20px 0 rgba(0,0,0,0.8),
+        0 0 50px rgba(0,0,0,0.5);
+      border: 6px solid var(--wood-dark);
+      transform: scale(0.8) rotate(-2deg);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 90vw;
+      position: relative;
+    }
+
+    /* Vintage telegram / notice look */
+    .modal-content::before {
+      content: 'OFFICIAL NOTICE';
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-red);
+      color: #fff;
+      font-family: 'Bebas Neue', sans-serif;
+      padding: 2px 15px;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      border: 2px solid #fff;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1) rotate(0deg);
+    }
+
+    .modal-content h2 {
+      font-family: 'Rye', serif;
+      font-size: 1.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .modal-content p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-color);
+      word-break: break-word;
+      direction: auto;
+      border-top: 2px solid var(--wood-dark);
+      border-bottom: 2px solid var(--wood-dark);
+      padding: 15px 0;
+      margin: 15px 0;
+    }
+
+    .modal-content button {
+      margin-top: 10px;
+      padding: 12px 30px;
+      background: var(--wood-light);
+      color: var(--text-color);
+      border: 3px solid var(--wood-dark);
+      border-radius: 6px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: 400;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--wood-dark);
+      transition: all 0.1s;
+    }
+
+    .modal-content button:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--wood-dark);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 450px) {
+      h1 { font-size: 1.5rem; }
+      .choice-box { width: 90px; height: 90px; }
+      .choice-box svg { width: 65px; height: 65px; }
+      .control-btn svg { width: 45px; height: 45px; }
+      .score-item { min-width: 80px; padding: 8px 15px; }
+      .score-value { font-size: 1.5rem; }
+      .result-text { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>RPS<span>88</span></h1>
+    <button id="themeToggle" aria-label="Toggle Theme"></button>
+  </header>
+
+  <main>
+    <div class="scoreboard">
+      <div class="score-item">
+        <span class="score-label">You</span>
+        <span class="score-value" id="playerScore">0</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">Bot</span>
+        <span class="score-value" id="botScore">0</span>
+      </div>
+    </div>
+
+    <div class="arena">
+      <div class="choice-box" id="playerChoice"></div>
+      <div class="result-text" id="resultText">Choose!</div>
+      <div class="choice-box" id="botChoice"></div>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn" data-choice="rock" aria-label="Rock"></button>
+      <button class="control-btn" data-choice="paper" aria-label="Paper"></button>
+      <button class="control-btn" data-choice="scissors" aria-label="Scissors"></button>
+    </div>
+  </main>
+
+  <footer>
+    <div>mohamed005cheikh@gmail.com | by MC88</div>
+    <pre>
+█   █  ███   ███   ███
+██ ██ █     █   █ █   █
+█ █ █ █      ███   ███
+█   █ █     █   █ █   █
+█   █  ███   ███   ███
+    </pre>
+  </footer>
+
+  <div class="modal" id="resultModal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Result</h2>
+      <p id="modalMessage">-</p>
+      <button id="closeModal">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const playerScoreEl = document.getElementById('playerScore');
+    const botScoreEl = document.getElementById('botScore');
+    const playerChoiceEl = document.getElementById('playerChoice');
+    const botChoiceEl = document.getElementById('botChoice');
+    const resultText = document.getElementById('resultText');
+    const controlBtns = document.querySelectorAll('.control-btn');
+    const themeToggle = document.getElementById('themeToggle');
+    const resultModal = document.getElementById('resultModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const closeModal = document.getElementById('closeModal');
+
+    // Vintage Lamp SVG for theme toggle
+    const moonSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+    const sunSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+
+    // --- REALISTIC SVG ICONS ---
+    
+    // Rock: A heavily textured, carved stone with 3D shading
+    const iconRock = `
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#8a8076"/>
+          <stop offset="30%" stop-color="#5c534a"/>
+          <stop offset="70%" stop-color="#3b332d"/>
+          <stop offset="100%" stop-color="#1a1512"/>
+        </linearGradient>
+        <linearGradient id="rockHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#d4cec5" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#5c534a" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="rockShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="3" dy="5" stdDeviation="3" flood-color="#000" flood-opacity="0.8"/>
+        </filter>
+      </defs>
+      <path d="M15,65 C10,50 20,25 40,15 C60,5 85,15 90,35 C95,55 85,85 65,90 C45,95 20,80 15,65 Z" fill="url(#rockGrad)" filter="url(#rockShadow)"/>
+      <path d="M20,60 C18,48 25,30 42,20 C55,12 75,20 80,35 C85,50 75,75 60,82 C45,88 25,75 20,60 Z" fill="url(#rockHighlight)" opacity="0.4"/>
+      <!-- Cracks and details -->
+      <path d="M30,25 L40,45 L35,60" fill="none" stroke="#1a1512" stroke-width="2" opacity="0.6"/>
+      <path d="M70,30 L65,50 L75,70" fill="none" stroke="#1a1512" stroke-width="2" opacity="0.6"/>
+      <path d="M40,45 L60,40" fill="none" stroke="#1a1512" stroke-width="1.5" opacity="0.5"/>
+      <path d="M50,75 L55,85" fill="none" stroke="#1a1512" stroke-width="2" opacity="0.4"/>
+      <!-- Tiny moss/patina spots -->
+      <circle cx="35" cy="55" r="2" fill="#4a5c42" opacity="0.6"/>
+      <circle cx="65" cy="65" r="1.5" fill="#4a5c42" opacity="0.5"/>
+      <circle cx="75" cy="45" r="2.5" fill="#4a5c42" opacity="0.4"/>
+    </svg>`;
+
+    // Paper: An aged, rolled parchment scroll with wax seal
+    const iconPaper = `
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="paperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fdf4d4"/>
+          <stop offset="50%" stop-color="#e8d5b0"/>
+          <stop offset="100%" stop-color="#c4a882"/>
+        </linearGradient>
+        <linearGradient id="rollGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#c4a882"/>
+          <stop offset="50%" stop-color="#8a7050"/>
+          <stop offset="100%" stop-color="#5c4a35"/>
+        </linearGradient>
+        <filter id="paperShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="3" dy="5" stdDeviation="3" flood-color="#000" flood-opacity="0.8"/>
+        </filter>
+      </defs>
+      <!-- Main parchment body -->
+      <path d="M20,15 L80,15 L85,85 L15,85 Z" fill="url(#paperGrad)" filter="url(#paperShadow)"/>
+      <!-- Top roll -->
+      <path d="M15,15 Q20,5 25,15 L75,15 Q80,5 85,15 L85,25 L15,25 Z" fill="url(#rollGrad)"/>
+      <!-- Bottom roll -->
+      <path d="M15,75 L85,75 L85,85 Q80,95 75,85 L25,85 Q20,95 15,85 Z" fill="url(#rollGrad)"/>
+      <!-- Faux text lines -->
+      <path d="M25,35 L75,35" fill="none" stroke="#8a7050" stroke-width="2" opacity="0.5"/>
+      <path d="M25,45 L70,45" fill="none" stroke="#8a7050" stroke-width="2" opacity="0.5"/>
+      <path d="M25,55 L75,55" fill="none" stroke="#8a7050" stroke-width="2" opacity="0.5"/>
+      <path d="M25,65 L60,65" fill="none" stroke="#8a7050" stroke-width="2" opacity="0.5"/>
+      <!-- Wax seal -->
+      <circle cx="75" cy="70" r="8" fill="#8c1c1c" filter="url(#paperShadow)"/>
+      <circle cx="75" cy="70" r="5" fill="none" stroke="#6b1212" stroke-width="1.5"/>
+      <!-- Aged spots -->
+      <circle cx="30" cy="30" r="3" fill="#8a7050" opacity="0.2"/>
+      <circle cx="60" cy="80" r="4" fill="#8a7050" opacity="0.2"/>
+      <circle cx="80" cy="50" r="2" fill="#8a7050" opacity="0.2"/>
+    </svg>`;
+
+    // Scissors: Vintage brass barber scissors with red handles
+    const iconScissors = `
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f4e9d8"/>
+          <stop offset="30%" stop-color="#d4af37"/>
+          <stop offset="70%" stop-color="#997a22"/>
+          <stop offset="100%" stop-color="#5c4a15"/>
+        </linearGradient>
+        <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#a52a2a"/>
+          <stop offset="100%" stop-color="#4a0e0e"/>
+        </linearGradient>
+        <filter id="scissorShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="3" dy="5" stdDeviation="3" flood-color="#000" flood-opacity="0.8"/>
+        </filter>
+      </defs>
+      <g filter="url(#scissorShadow)">
+        <!-- Blades -->
+        <path d="M50,50 L20,10 L25,8 L55,45 Z" fill="url(#brassGrad)"/>
+        <path d="M50,50 L80,10 L75,8 L45,45 Z" fill="url(#brassGrad)"/>
+        <!-- Blade inner edge (sharp) -->
+        <path d="M50,50 L22,12" fill="none" stroke="#fff" stroke-width="1" opacity="0.5"/>
+        <path d="M50,50 L78,12" fill="none" stroke="#fff" stroke-width="1" opacity="0.5"/>
+        <!-- Central pivot screw -->
+        <circle cx="50" cy="50" r="5" fill="#5c4a15"/>
+        <circle cx="50" cy="50" r="3" fill="#f4e9d8"/>
+        <line x1="47" y1="50" x2="53" y2="50" stroke="#5c4a15" stroke-width="1.5"/>
+        <!-- Handles (Red) -->
+        <path d="M50,55 L45,75 Q35,90 25,80 Q15,70 30,60 L40,55 Z" fill="url(#handleGrad)"/>
+        <path d="M50,55 L55,75 Q65,90 75,80 Q85,70 70,60 L60,55 Z" fill="url(#handleGrad)"/>
+        <!-- Handle inner cutouts -->
+        <circle cx="32" cy="72" r="6" fill="#1a1412"/>
+        <circle cx="68" cy="72" r="6" fill="#1a1412"/>
+      </g>
+    </svg>`;
+
+    // Question Mark: A vintage glowing marquee sign
+    const questionMark = `
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <text x="50" y="75" font-family="'Bebas Neue', sans-serif" font-size="80" font-weight="bold" fill="#d4af37" text-anchor="middle" filter="url(#neonGlow)">?</text>
+      <text x="50" y="75" font-family="'Bebas Neue', sans-serif" font-size="80" font-weight="bold" fill="#fff" text-anchor="middle" opacity="0.8">?</text>
+    </svg>`;
+
+    let playerScore = 0;
+    let botScore = 0;
+    let isPlaying = false;
+
+    const choices = ['rock', 'paper', 'scissors'];
+    const winMap = { rock: 'scissors', paper: 'rock', scissors: 'paper' };
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('rps88-theme') || 'dark';
+      document.body.setAttribute('data-theme', savedTheme === 'light' ? 'light' : 'dark');
+      // Using the lamp icon for toggle
+      themeToggle.innerHTML = savedTheme === 'light' ? sunSvg : moonSvg;
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('rps88-theme', newTheme);
+      themeToggle.innerHTML = newTheme === 'light' ? sunSvg : moonSvg;
+    });
+
+    function playGame(playerChoice) {
+      if (isPlaying) return;
+      isPlaying = true;
+      
+      controlBtns.forEach(btn => btn.disabled = true);
+      playerChoiceEl.innerHTML = playerChoice === 'rock' ? iconRock : (playerChoice === 'paper' ? iconPaper : iconScissors);
+      playerChoiceEl.classList.add('pop');
+      botChoiceEl.innerHTML = questionMark;
+      resultText.textContent = 'Shaking...';
+      resultText.style.opacity = '1';
+      
+      playerChoiceEl.classList.remove('shake');
+      botChoiceEl.classList.add('shake');
+
+      setTimeout(() => {
+        botChoiceEl.classList.remove('shake');
+        const botChoice = choices[Math.floor(Math.random() * 3)];
+        botChoiceEl.innerHTML = botChoice === 'rock' ? iconRock : (botChoice === 'paper' ? iconPaper : iconScissors);
+        botChoiceEl.classList.add('pop');
+
+        setTimeout(() => {
+          playerChoiceEl.classList.remove('pop');
+          botChoiceEl.classList.remove('pop');
+
+          let result = '';
+          let winner = '';
+
+          if (playerChoice === botChoice) {
+            result = "It's a Tie!";
+            winner = 'tie';
+          } else if (winMap[playerChoice] === botChoice) {
+            result = "You Win!";
+            winner = 'player';
+            playerScore++;
+          } else {
+            result = "Bot Wins!";
+            winner = 'bot';
+            botScore++;
+          }
+
+          playerScoreEl.textContent = playerScore;
+          botScoreEl.textContent = botScore;
+          resultText.textContent = result;
+          resultText.style.opacity = '1';
+
+          setTimeout(() => {
+            resultText.style.opacity = '0';
+          }, 1500);
+
+          showResult(result, winner);
+          isPlaying = false;
+          controlBtns.forEach(btn => btn.disabled = false);
+        }, 400);
+      }, 1000);
+    }
+
+    controlBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        playGame(btn.dataset.choice);
+      });
+    });
+
+    function showResult(message, winner) {
+      modalTitle.textContent = winner === 'tie' ? 'Stalemate' : (winner === 'player' ? 'Victory' : 'Defeat');
+      modalMessage.textContent = message;
+      resultModal.classList.add('show');
+    }
+
+    closeModal.addEventListener('click', () => {
+      resultModal.classList.remove('show');
+    });
+
+    resultModal.addEventListener('click', (e) => {
+      if (e.target === resultModal) {
+        resultModal.classList.remove('show');
+      }
+    });
+
+    // Initialize Game
+    initTheme();
+    playerChoiceEl.innerHTML = questionMark;
+    botChoiceEl.innerHTML = questionMark;
+    
+    // Set up control buttons with icons
+    controlBtns[0].innerHTML = iconRock;
+    controlBtns[1].innerHTML = iconPaper;
+    controlBtns[2].innerHTML = iconScissors;
+  </script>
+</body>
+</html>

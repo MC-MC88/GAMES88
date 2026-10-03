@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Numbrle88 | Vintage Comic Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Lilita+One&family=Special+Elite&family=Rye&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Theme 1: Noir / X-Files / Batman TAS */
+      --bg: #1a1a1a;
+      --bg-pattern: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #111 100%);
+      --text-main: #f0f0f0;
+      --text-accent: #e6b800;
+      --tile-bg: #2c3e50;
+      --tile-border: #4a5a6a;
+      --tile-text: #ffffff;
+      --green: #27ae60;
+      --yellow: #f39c12;
+      --grey: #7f8c8d;
+      --btn-bg: #e6b800;
+      --btn-text: #1a1a1a;
+      --header-font: 'Special Elite', monospace;
+      --body-font: 'Lilita One', cursive;
+      --logo-shadow: 3px 3px 0px #000, 6px 6px 0px #e6b800;
+    }
+    [data-theme="campout"] {
+      --bg: #2b1f4a;
+      --bg-pattern: radial-gradient(circle at 50% 50%, #3d2b63 0%, #1a122b 100%);
+      --text-main: #f8e71c;
+      --text-accent: #ff8c00;
+      --tile-bg: #1e3b2e;
+      --tile-border: #4caf50;
+      --tile-text: #ffffff;
+      --green: #2ecc71;
+      --yellow: #ff8c00;
+      --grey: #7f8c8d;
+      --btn-bg: #ff8c00;
+      --btn-text: #1a122b;
+      --header-font: 'Bangers', cursive;
+      --body-font: 'Lilita One', cursive;
+      --logo-shadow: 3px 3px 0px #4caf50, 6px 6px 0px #000;
+    }
+    [data-theme="grim"] {
+      --bg: #110b1a;
+      --bg-pattern: radial-gradient(circle at 50% 50%, #2a1133 0%, #0a050d 100%);
+      --text-main: #d32f2f;
+      --text-accent: #ffffff;
+      --tile-bg: #1f1310;
+      --tile-border: #4a0e0e;
+      --tile-text: #ffffff;
+      --green: #4caf50;
+      --yellow: #d32f2f;
+      --grey: #4a4a4a;
+      --btn-bg: #d32f2f;
+      --btn-text: #110b1a;
+      --header-font: 'Bangers', cursive;
+      --body-font: 'Lilita One', cursive;
+      --logo-shadow: 3px 3px 0px #fff, 6px 6px 0px #d32f2f;
+    }
+    [data-theme="comic"] {
+      --bg: #e3d4b5;
+      --bg-pattern: radial-gradient(circle at 50% 50%, #f0e6d2 0%, #c4a882 100%);
+      --text-main: #2c2c2c;
+      --text-accent: #c62828;
+      --tile-bg: #fdf4d4;
+      --tile-border: #8a7050;
+      --tile-text: #2c2c2c;
+      --green: #27ae60;
+      --yellow: #e6b800;
+      --grey: #b0b0b0;
+      --btn-bg: #c62828;
+      --btn-text: #fdf4d4;
+      --header-font: 'Rye', serif;
+      --body-font: 'Special Elite', monospace;
+      --logo-shadow: 3px 3px 0px #1976d2, 6px 6px 0px #2c2c2c;
+    }
+    [data-theme="wild"] {
+      --bg: #5c4a35;
+      --bg-pattern: radial-gradient(circle at 50% 50%, #7a634a 0%, #3d2e1f 100%);
+      --text-main: #fefae0;
+      --text-accent: #d4a373;
+      --tile-bg: #3d2e1f;
+      --tile-border: #4a3b2a;
+      --tile-text: #fefae0;
+      --green: #4a7c4a;
+      --yellow: #d4a373;
+      --grey: #5a5a5a;
+      --btn-bg: #d4a373;
+      --btn-text: #3d2e1f;
+      --header-font: 'Bangers', cursive;
+      --body-font: 'Lilita One', cursive;
+      --logo-shadow: 3px 3px 0px #3d2e1f, 6px 6px 0px #d4a373;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: var(--body-font);
+      background-color: var(--bg);
+      background-image: var(--bg-pattern);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.5s ease;
+      overflow-x: hidden;
+      padding: 10px;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    header {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      margin-top: 10px;
+      gap: 12px;
+    }
+
+    h1 {
+      font-family: var(--header-font);
+      font-size: 2.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-main);
+      text-shadow: var(--logo-shadow);
+      text-align: center;
+      line-height: 1;
+      transform: rotate(-1deg);
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 12px;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 15px;
+      border-radius: 30px;
+      border: 2px solid var(--text-accent);
+    }
+
+    .theme-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 3px solid var(--text-accent);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.5);
+    }
+    .theme-btn:hover { transform: scale(1.1); }
+    .theme-btn:active { transform: translateY(3px); box-shadow: 0 0 0 rgba(0,0,0,0.5); }
+    .theme-btn.noir { background: #2c3e50; }
+    .theme-btn.campout { background: #ff8c00; }
+    .theme-btn.grim { background: #d32f2f; }
+    .theme-btn.comic { background: #e3d4b5; }
+    .theme-btn.wild { background: #7a8b5c; }
+
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      font-family: var(--body-font);
+      font-size: 0.95rem;
+      color: var(--text-accent);
+      text-align: center;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+
+    /* --- GUESS GRID --- */
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .tile {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Lilita One', cursive;
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: var(--tile-bg);
+      border: 3px solid var(--tile-border);
+      border-radius: 6px;
+      color: var(--tile-text);
+      transition: all 0.2s ease;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    .tile.active {
+      border-color: var(--text-accent);
+      box-shadow: 0 0 8px var(--text-accent);
+    }
+
+    .tile.filled {
+      animation: pop 0.15s ease-in-out;
+    }
+
+    .tile.green {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+      animation: flip 0.4s ease-in-out;
+    }
+
+    .tile.yellow {
+      background: var(--yellow);
+      border-color: var(--yellow);
+      color: #fff;
+      animation: flip 0.4s ease-in-out;
+    }
+
+    .tile.grey {
+      background: var(--grey);
+      border-color: var(--grey);
+      color: #fff;
+      animation: flip 0.4s ease-in-out;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes flip {
+      0% { transform: rotateX(0deg); }
+      50% { transform: rotateX(90deg); }
+      100% { transform: rotateX(0deg); }
+    }
+
+    /* --- KEYBOARD --- */
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .key-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .key {
+      flex: 1;
+      padding: 15px 0;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: 3px solid var(--text-accent);
+      border-radius: 6px;
+      font-family: var(--body-font);
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--text-accent);
+      transition: all 0.1s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: 0;
+      user-select: none;
+    }
+
+    .key:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 var(--text-accent);
+    }
+
+    .key.wide {
+      flex: 2;
+      font-size: 1rem;
+    }
+
+    .key.used {
+      opacity: 0.5;
+    }
+
+    /* --- CONTROLS --- */
+    .controls {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 15px;
+      border: 3px solid var(--text-accent);
+      border-radius: 8px;
+      font-family: var(--header-font);
+      font-size: 1rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--text-accent);
+      transition: all 0.1s;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .action-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 var(--text-accent);
+    }
+
+    .action-btn.submit {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .action-btn.clear {
+      background: var(--grey);
+      color: #fff;
+    }
+
+    .action-btn.newgame {
+      background: var(--yellow);
+      color: #2c2c2c;
+    }
+
+    /* --- MODAL --- */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--tile-bg);
+      padding: 40px 30px;
+      border-radius: 12px;
+      text-align: center;
+      border: 6px solid var(--text-accent);
+      box-shadow: 0 15px 0 rgba(0,0,0,0.5);
+      transform: scale(0.8) rotate(-2deg);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 90vw;
+      position: relative;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1) rotate(0deg);
+    }
+
+    .modal-content h2 {
+      font-family: var(--header-font);
+      font-size: 2.2rem;
+      color: var(--text-accent);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      text-shadow: var(--logo-shadow);
+    }
+
+    .modal-content p {
+      font-family: var(--body-font);
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .modal-content .answer-reveal {
+      font-family: 'Lilita One', cursive;
+      font-size: 2.5rem;
+      color: var(--green);
+      letter-spacing: 5px;
+      margin: 15px 0;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+    }
+
+    .modal-content button {
+      padding: 15px 30px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: 3px solid var(--text-accent);
+      border-radius: 8px;
+      font-family: var(--body-font);
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--text-accent);
+    }
+
+    .modal-content button:active {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 var(--text-accent);
+    }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 15px 10px;
+      font-family: var(--body-font);
+      font-size: 0.85rem;
+      color: var(--text-main);
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      margin-top: auto;
+      border-top: 2px solid var(--text-accent);
+    }
+
+    footer pre {
+      font-family: monospace;
+      font-size: 0.6rem;
+      margin-top: 5px;
+      white-space: pre;
+      overflow-x: auto;
+      opacity: 0.7;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      font-size: 0.75rem;
+      margin-top: 5px;
+      opacity: 0.8;
+      flex-wrap: wrap;
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .legend .dot.green { background: var(--green); }
+    .legend .dot.yellow { background: var(--yellow); }
+    .legend .dot.grey { background: var(--grey); }
+
+    @media (max-width: 450px) {
+      h1 { font-size: 2rem; }
+      .tile { font-size: 1.4rem; }
+      .key { font-size: 1rem; padding: 12px 0; }
+      .action-btn { font-size: 0.85rem; padding: 12px; }
+      .modal-content h2 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body data-theme="noir">
+
+  <header>
+    <h1>NUMBRLE88</h1>
+    <div class="theme-switcher">
+      <button class="theme-btn noir" data-theme="noir" aria-label="Noir Theme" title="X-Files / Batman"></button>
+      <button class="theme-btn campout" data-theme="campout" aria-label="Campout Theme" title="Scooby Doo / 90s"></button>
+      <button class="theme-btn grim" data-theme="grim" aria-label="Grim Theme" title="Billy & Mandy"></button>
+      <button class="theme-btn comic" data-theme="comic" aria-label="Comic Theme" title="Golden Age Disney"></button>
+      <button class="theme-btn wild" data-theme="wild" aria-label="Wild Theme" title="Where the Wild Things Are"></button>
+    </div>
+  </header>
+
+  <main>
+    <p class="subtitle">Guess the 5-digit number in 5 tries</p>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="legend">
+      <span><span class="dot green"></span> Correct spot</span>
+      <span><span class="dot yellow"></span> Wrong spot</span>
+      <span><span class="dot grey"></span> Not in code</span>
+    </div>
+
+    <div class="keyboard" id="keyboard">
+      <div class="key-row">
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+      </div>
+      <div class="key-row">
+        <button class="key" data-key="6">6</button>
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+        <button class="key" data-key="0">0</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="action-btn clear" id="clearBtn">Clear</button>
+      <button class="action-btn submit" id="submitBtn">Submit</button>
+      <button class="action-btn newgame" id="newGameBtn">New Game</button>
+    </div>
+  </main>
+
+  <footer>
+    <div>mohamed005cheikh@gmail.com | by MC88</div>
+    <pre>
+█   █  ███   ███   ███
+██ ██ █     █   █ █   █
+█ █ █ █      ███   ███
+█   █ █     █   █ █   █
+█   █  ███   ███   ███
+    </pre>
+  </footer>
+
+  <div class="modal" id="endModal">
+    <div class="modal-content">
+      <h2 id="modalTitle">You Win!</h2>
+      <p id="modalMessage">You cracked the code!</p>
+      <div class="answer-reveal" id="answerReveal">12345</div>
+      <button id="playAgainBtn">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    // =============================================
+    // NUMBRLE88 - 5-Digit Number Guessing Game
+    // Guess the secret 5-digit number in 5 tries.
+    // Green = correct digit, correct position
+    // Yellow = correct digit, wrong position
+    // Grey = digit not in the number
+    // =============================================
+
+    const ROWS = 5;
+    const COLS = 5;
+    const MAX_ATTEMPTS = 5;
+
+    let secretCode = [];
+    let currentRow = 0;
+    let currentGuess = [];
+    let gameOver = false;
+    let attempts = [];
+
+    const gridEl = document.getElementById('grid');
+    const endModal = document.getElementById('endModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const answerReveal = document.getElementById('answerReveal');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const newGameBtn = document.getElementById('newGameBtn');
+
+    // --- Initialize Game ---
+    function initGame() {
+      secretCode = [];
+      for (let i = 0; i < 5; i++) {
+        secretCode.push(Math.floor(Math.random() * 10).toString());
+      }
+
+      currentRow = 0;
+      currentGuess = [];
+      gameOver = false;
+      attempts = [];
+
+      renderGrid();
+      resetKeyboardColors();
+      hideModal();
+    }
+
+    // --- Render the Grid ---
+    function renderGrid() {
+      gridEl.innerHTML = '';
+      for (let r = 0; r < ROWS; r++) {
+        const rowEl = document.createElement('div');
+        rowEl.classList.add('row');
+        for (let c = 0; c < COLS; c++) {
+          const tile = document.createElement('div');
+          tile.classList.add('tile');
+          tile.dataset.row = r;
+          tile.dataset.col = c;
+          tile.id = `tile-${r}-${c}`;
+          rowEl.appendChild(tile);
+        }
+        gridEl.appendChild(rowEl);
+      }
+      updateActiveTile();
+    }
+
+    // --- Update Active Tile Highlight ---
+    function updateActiveTile() {
+      document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
+      if (gameOver) return;
+      if (currentRow < ROWS && currentGuess.length < COLS) {
+        const activeTile = document.getElementById(`tile-${currentRow}-${currentGuess.length}`);
+        if (activeTile) activeTile.classList.add('active');
+      }
+    }
+
+    // --- Add a Digit ---
+    function addDigit(digit) {
+      if (gameOver) return;
+      if (currentRow >= ROWS) return;
+      if (currentGuess.length >= COLS) return;
+
+      currentGuess.push(digit);
+      const tile = document.getElementById(`tile-${currentRow}-${currentGuess.length - 1}`);
+      tile.textContent = digit;
+      tile.classList.add('filled');
+      updateActiveTile();
+    }
+
+    // --- Clear Current Guess ---
+    function clearGuess() {
+      if (gameOver) return;
+      if (currentRow >= ROWS) return;
+
+      for (let c = 0; c < currentGuess.length; c++) {
+        const tile = document.getElementById(`tile-${currentRow}-${c}`);
+        tile.textContent = '';
+        tile.classList.remove('filled');
+      }
+      currentGuess = [];
+      updateActiveTile();
+    }
+
+    // --- Submit Guess ---
+    function submitGuess() {
+      if (gameOver) return;
+      if (currentRow >= ROWS) return;
+      if (currentGuess.length !== COLS) {
+        shakeRow(currentRow);
+        return;
+      }
+
+      const guess = [...currentGuess];
+      const result = evaluateGuess(guess);
+      attempts.push({ guess, result });
+
+      // Apply colors with a slight delay for animation
+      for (let c = 0; c < COLS; c++) {
+        const tile = document.getElementById(`tile-${currentRow}-${c}`);
+        setTimeout(() => {
+          tile.classList.add(result[c]);
+        }, c * 100);
+      }
+
+      // Update keyboard colors
+      updateKeyboardColors(guess, result);
+
+      // Check win/lose
+      if (result.every(r => r === 'green')) {
+        gameOver = true;
+        setTimeout(() => {
+          showModal('VICTORY!', 'You cracked the code in ' + (currentRow + 1) + ' tries!', guess.join(''));
+        }, 600);
+        return;
+      }
+
+      currentRow++;
+      currentGuess = [];
+
+      if (currentRow >= ROWS) {
+        gameOver = true;
+        setTimeout(() => {
+          showModal('GAME OVER', 'The secret number was:', secretCode.join(''));
+        }, 600);
+      } else {
+        updateActiveTile();
+      }
+    }
+
+    // --- Evaluate Guess (Wordle-style) ---
+    function evaluateGuess(guess) {
+      const result = new Array(COLS).fill('grey');
+      const secretCopy = [...secretCode];
+      const guessCopy = [...guess];
+
+      // First pass: Green (correct position)
+      for (let i = 0; i < COLS; i++) {
+        if (guessCopy[i] === secretCopy[i]) {
+          result[i] = 'green';
+          secretCopy[i] = null;
+          guessCopy[i] = null;
+        }
+      }
+
+      // Second pass: Yellow (correct digit, wrong position)
+      for (let i = 0; i < COLS; i++) {
+        if (guessCopy[i] === null) continue;
+        const idx = secretCopy.indexOf(guessCopy[i]);
+        if (idx !== -1) {
+          result[i] = 'yellow';
+          secretCopy[idx] = null;
+        }
+      }
+
+      return result;
+    }
+
+    // --- Update Keyboard Colors ---
+    function updateKeyboardColors(guess, result) {
+      for (let i = 0; i < guess.length; i++) {
+        const keyBtn = document.querySelector(`.key[data-key="${guess[i]}"]`);
+        if (!keyBtn) continue;
+        const currentClass = keyBtn.classList.contains('green') ? 'green' :
+                             keyBtn.classList.contains('yellow') ? 'yellow' : 'grey';
+        const newClass = result[i];
+
+        // Green beats Yellow, Yellow beats Grey
+        if (newClass === 'green') {
+          keyBtn.classList.remove('yellow', 'grey');
+          keyBtn.classList.add('green');
+        } else if (newClass === 'yellow' && currentClass !== 'green') {
+          keyBtn.classList.remove('grey');
+          keyBtn.classList.add('yellow');
+        } else if (newClass === 'grey' && currentClass === 'grey') {
+          keyBtn.classList.add('grey');
+        }
+      }
+    }
+
+    // --- Reset Keyboard Colors ---
+    function resetKeyboardColors() {
+      document.querySelectorAll('.key').forEach(key => {
+        key.classList.remove('green', 'yellow', 'grey');
+      });
+    }
+
+    // --- Shake Row Animation ---
+    function shakeRow(row) {
+      const rowEl = gridEl.children[row];
+      rowEl.style.animation = 'none';
+      rowEl.offsetHeight; // Trigger reflow
+      rowEl.style.animation = 'shake 0.3s ease-in-out';
+      setTimeout(() => {
+        rowEl.style.animation = '';
+      }, 300);
+    }
+
+    // Add shake keyframe dynamically
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-5px); }
+        40% { transform: translateX(5px); }
+        60% { transform: translateX(-5px); }
+        80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // --- Modal ---
+    function showModal(title, message, answer) {
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      answerReveal.textContent = answer;
+      endModal.classList.add('show');
+    }
+
+    function hideModal() {
+      endModal.classList.remove('show');
+    }
+
+    // --- Event Listeners ---
+    document.querySelectorAll('.key').forEach(btn => {
+      btn.addEventListener('click', () => {
+        addDigit(btn.dataset.key);
+      });
+    });
+
+    clearBtn.addEventListener('click', clearGuess);
+    submitBtn.addEventListener('click', submitGuess);
+    newGameBtn.addEventListener('click', initGame);
+    playAgainBtn.addEventListener('click', initGame);
+
+    // Physical keyboard support (bonus)
+    document.addEventListener('keydown', (e) => {
+      if (e.key >= '0' && e.key <= '9') {
+        addDigit(e.key);
+      } else if (e.key === 'Backspace') {
+        clearGuess();
+      } else if (e.key === 'Enter') {
+        submitGuess();
+      }
+    });
+
+    // --- Theme Switching ---
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.body.setAttribute('data-theme', btn.dataset.theme);
+      });
+    });
+
+    // --- Start Game ---
+    initGame();
+  </script>
+</body>
+</html>

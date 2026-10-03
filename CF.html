@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CF88 | Memory Match</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@700;900&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    /* --- 5 NEW THEMES --- */
+    :root {
+      /* Theme 1: Harvest (Sunflowers / Woodblock Print) */
+      --bg: #2b1f14;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #4a3524 0%, #1a110a 100%);
+      --text-main: #f4e8d1;
+      --text-accent: #e6a817;
+      --text-muted: #a68864;
+      --card-bg: #3d2e1f;
+      --card-border: #8c6a3d;
+      --card-back-bg: #f4e8d1;
+      --card-back-text: #2b1f14;
+      --matched-border: #4caf50;
+      --matched-bg: #2e7d32;
+      --btn-bg: #4a3524;
+      --btn-border: #8c6a3d;
+      --btn-active: #e6a817;
+      --header-font: 'Cinzel', serif;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #e6a817;
+    }
+
+    [data-theme="midnight"] {
+      /* Theme 2: Midnight (Gothic Moon / Spooky) */
+      --bg: #0d1321;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #1d2d44 0%, #05080e 100%);
+      --text-main: #e0e1dd;
+      --text-accent: #fde74c;
+      --text-muted: #778da9;
+      --card-bg: #1d2d44;
+      --card-border: #415a77;
+      --card-back-bg: #e0e1dd;
+      --card-back-text: #0d1321;
+      --matched-border: #4caf50;
+      --matched-bg: #2e7d32;
+      --btn-bg: #1d2d44;
+      --btn-border: #415a77;
+      --btn-active: #fde74c;
+      --header-font: 'Special Elite', monospace;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #fde74c;
+    }
+
+    [data-theme="noir"] {
+      /* Theme 3: Noir (Red & Black) */
+      --bg: #121212;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #2a2a2a 0%, #050505 100%);
+      --text-main: #f0f0f0;
+      --text-accent: #e63946;
+      --text-muted: #888888;
+      --card-bg: #1f1f1f;
+      --card-border: #e63946;
+      --card-back-bg: #f0f0f0;
+      --card-back-text: #121212;
+      --matched-border: #4caf50;
+      --matched-bg: #2e7d32;
+      --btn-bg: #1f1f1f;
+      --btn-border: #e63946;
+      --btn-active: #e63946;
+      --header-font: 'Cinzel', serif;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #e63946;
+    }
+
+    [data-theme="whimsical"] {
+      /* Theme 4: Whimsical (Storybook Illustration) */
+      --bg: #f4f1ea;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #ffffff 0%, #dcd5c4 100%);
+      --text-main: #2c3e50;
+      --text-accent: #4a6fa5;
+      --text-muted: #7f8c8d;
+      --card-bg: #ffffff;
+      --card-border: #4a6fa5;
+      --card-back-bg: #2c3e50;
+      --card-back-text: #f4f1ea;
+      --matched-border: #27ae60;
+      --matched-bg: #2ecc71;
+      --btn-bg: #4a6fa5;
+      --btn-border: #2c3e50;
+      --btn-active: #2c3e50;
+      --header-font: 'Cinzel', serif;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #4a6fa5, 4px 4px 0 #2c3e50;
+    }
+
+    [data-theme="retro"] {
+      /* Theme 5: Retro Print (70s Orange & Teal) */
+      --bg: #003049;
+      --bg-pattern: radial-gradient(circle at 50% 30%, #005f73 0%, #001219 100%);
+      --text-main: #e9d8a6;
+      --text-accent: #ee9b00;
+      --text-muted: #94d2bd;
+      --card-bg: #0a9396;
+      --card-border: #ee9b00;
+      --card-back-bg: #e9d8a6;
+      --card-back-text: #003049;
+      --matched-border: #2ecc71;
+      --matched-bg: #27ae60;
+      --btn-bg: #0a9396;
+      --btn-border: #ee9b00;
+      --btn-active: #e9d8a6;
+      --header-font: 'Special Elite', monospace;
+      --body-font: 'Nunito', sans-serif;
+      --logo-shadow: 2px 2px 0 #000, 4px 4px 0 #ee9b00;
+    }
+
+    /* --- RESET & BASE --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: var(--body-font);
+      background-color: var(--bg);
+      background-image: var(--bg-pattern);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.5s ease;
+      overflow-x: hidden;
+      padding: 10px;
+      position: relative;
+    }
+
+    /* Vintage Grain overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      margin-top: 10px;
+      gap: 10px;
+      background: rgba(0,0,0,0.2);
+      border: 2px solid var(--btn-border);
+      border-radius: 8px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      font-family: var(--header-font);
+      font-size: 3rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-accent);
+      text-shadow: var(--logo-shadow);
+      text-align: center;
+      line-height: 1;
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .theme-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 3px solid var(--btn-border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.5);
+    }
+    .theme-btn:hover { transform: scale(1.1); }
+    .theme-btn:active { transform: translateY(3px); box-shadow: 0 0 0 rgba(0,0,0,0.5); }
+    .theme-btn.harvest { background: #e6a817; }
+    .theme-btn.midnight { background: #fde74c; }
+    .theme-btn.noir { background: #e63946; }
+    .theme-btn.whimsical { background: #4a6fa5; }
+    .theme-btn.retro { background: #ee9b00; }
+
+    /* Settings Panel */
+    .settings-panel {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      border: 1px solid var(--btn-border);
+      margin-top: 10px;
+    }
+
+    .setting-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0,0,0,0.2);
+      padding: 8px;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .setting-group label {
+      font-size: 0.75rem;
+      color: var(--text-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .setting-group select, .setting-group input[type="text"] {
+      background: var(--btn-bg);
+      color: var(--text-main);
+      border: 2px solid var(--btn-border);
+      border-radius: 4px;
+      padding: 8px;
+      font-family: var(--body-font);
+      font-size: 0.85rem;
+      outline: none;
+      width: 100%;
+      text-align: center;
+    }
+
+    .setting-group select option {
+      background: var(--bg);
+    }
+
+    .btn-upload {
+      background: var(--btn-bg);
+      color: var(--text-main);
+      border: 2px solid var(--btn-border);
+      border-radius: 4px;
+      padding: 8px 15px;
+      font-family: var(--body-font);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      display: block;
+      width: 100%;
+    }
+
+    .btn-upload:hover {
+      border-color: var(--text-accent);
+      color: var(--text-accent);
+    }
+
+    .upload-hint {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    /* Game Board */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .board {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .board[data-grid="8"] { grid-template-columns: repeat(4, 1fr); max-width: 400px; }
+    .board[data-grid="16"] { grid-template-columns: repeat(4, 1fr); }
+    .board[data-grid="32"] { grid-template-columns: repeat(8, 1fr); max-width: 600px; }
+
+    .card {
+      aspect-ratio: 1 / 1;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--card-border);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .card-front {
+      background-color: var(--card-bg);
+      background-image: 
+        radial-gradient(circle at 50% 50%, transparent 30%, rgba(0,0,0,0.4) 100%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 2px, transparent 2px, transparent 4px);
+    }
+
+    .card-front::after {
+      content: '';
+      width: 50%;
+      height: 50%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 15 A35 35 0 0 1 85 50 A35 35 0 0 1 50 85 A35 35 0 0 1 15 50 A35 35 0 0 1 50 15 Z' fill='none' stroke='%23ffffff' stroke-width='4' opacity='0.3'/%3E%3Cpath d='M50 25 A25 25 0 0 1 75 50 A25 25 0 0 1 50 75 A25 25 0 0 1 25 50 A25 25 0 0 1 50 25 Z' fill='none' stroke='%23ffffff' stroke-width='2' opacity='0.2'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23ffffff' opacity='0.2'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0.7;
+    }
+
+    .card-back {
+      background: var(--card-back-bg);
+      color: var(--card-back-text);
+      transform: rotateY(180deg);
+      font-size: 2rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    .card-back .emoji {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .card-back .number {
+      font-family: var(--header-font);
+      font-size: 2.5rem;
+      color: var(--card-back-text);
+    }
+
+    /* Matched Card Styling - Completely different from unmatched */
+    .card.matched .card-inner {
+      transform: rotateY(180deg) scale(0.95);
+    }
+
+    .card.matched .card-back {
+      background: var(--matched-bg);
+      border-color: var(--matched-border);
+      color: #fff;
+      opacity: 0.8;
+    }
+
+    .card.matched .card-back::after {
+      content: '✓';
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 1.2rem;
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
+    /* Controls */
+    .controls {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      padding: 12px 25px;
+      background: var(--btn-bg);
+      color: var(--text-main);
+      border: 3px solid var(--btn-border);
+      border-radius: 6px;
+      font-family: var(--body-font);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--btn-border);
+      transition: all 0.1s;
+      text-transform: uppercase;
+    }
+
+    .action-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 var(--btn-border);
+    }
+
+    .action-btn.new-game {
+      background: var(--text-accent);
+      border-color: #000;
+      box-shadow: 0 5px 0 #000;
+      color: #fff;
+    }
+
+    .action-btn.new-game:active {
+      box-shadow: 0 0 0 #000;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg);
+      padding: 40px 30px;
+      border-radius: 8px;
+      text-align: center;
+      border: 4px solid var(--text-accent);
+      box-shadow: 0 15px 0 rgba(0,0,0,0.8);
+      transform: scale(0.8);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 90vw;
+      position: relative;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-content h2 {
+      font-family: var(--header-font);
+      font-size: 2.2rem;
+      color: var(--text-accent);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      text-shadow: var(--logo-shadow);
+    }
+
+    .modal-content p {
+      font-family: var(--body-font);
+      font-size: 1.1rem;
+      color: var(--text-main);
+      margin-bottom: 25px;
+    }
+
+    .modal-content button {
+      padding: 15px 30px;
+      background: var(--text-accent);
+      color: #fff;
+      border: 3px solid #000;
+      border-radius: 6px;
+      font-family: var(--body-font);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #000;
+      text-transform: uppercase;
+    }
+
+    .modal-content button:active {
+      transform: translateY(5px);
+      box-shadow: 0 0 0 #000;
+    }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 15px 10px;
+      font-family: var(--body-font);
+      font-size: 0.8rem;
+      color: var(--text-main);
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      margin-top: auto;
+      border-top: 2px solid var(--btn-border);
+    }
+
+    footer pre {
+      font-family: monospace;
+      font-size: 0.6rem;
+      margin-top: 5px;
+      white-space: pre;
+      overflow-x: auto;
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      h1 { font-size: 2.2rem; }
+      .board[data-grid="32"] { grid-template-columns: repeat(4, 1fr); max-width: 400px; }
+      .card-back .number { font-size: 1.8rem; }
+      .card-back .emoji { font-size: 1.8rem; }
+      .settings-panel { flex-direction: column; align-items: stretch; }
+      .setting-group { min-width: 100%; }
+    }
+  </style>
+</head>
+<body data-theme="harvest">
+
+  <header>
+    <h1>CF88</h1>
+    <div class="theme-switcher">
+      <button class="theme-btn harvest" data-theme="harvest" title="Harvest Sunflowers"></button>
+      <button class="theme-btn midnight" data-theme="midnight" title="Midnight Gothic"></button>
+      <button class="theme-btn noir" data-theme="noir" title="Noir Red & Black"></button>
+      <button class="theme-btn whimsical" data-theme="whimsical" title="Whimsical Storybook"></button>
+      <button class="theme-btn retro" data-theme="retro" title="Retro Print"></button>
+    </div>
+    
+    <div class="settings-panel">
+      <!-- Grid Size -->
+      <div class="setting-group">
+        <label for="gridSize">Cards</label>
+        <select id="gridSize">
+          <option value="8">8 Cards (4 Pairs)</option>
+          <option value="16" selected>16 Cards (8 Pairs)</option>
+          <option value="32">32 Cards (16 Pairs)</option>
+        </select>
+      </div>
+
+      <!-- Content Type -->
+      <div class="setting-group">
+        <label for="contentType">Card Content</label>
+        <select id="contentType">
+          <option value="numbers">Numbers</option>
+          <option value="emojis">Default Emojis</option>
+          <option value="customEmojis" selected>My Emojis (Keyboard)</option>
+        </select>
+      </div>
+      
+      <!-- Custom Emoji Input Area -->
+      <div class="setting-group" id="emojiInputGroup" style="display: flex; width: 100%;">
+        <label>Type your emojis/characters below</label>
+        <input type="text" id="customEmojiInput" placeholder="e.g. 🦊 🌻 🌙 (Space separated)" maxlength="100">
+        <button class="btn-upload" id="saveEmojisBtn">Save My Emojis</button>
+        <div class="upload-hint">Enter at least 4 characters/emojis.</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="board" id="gameBoard" data-grid="16"></div>
+    
+    <div class="controls">
+      <button class="action-btn new-game" id="newGameBtn">New Game</button>
+      <button class="action-btn" id="clearDataBtn" title="Clear custom settings from local storage">Reset Local Data</button>
+    </div>
+  </main>
+
+  <footer>
+    <div>mohamed005cheikh@gmail.com | by MC88</div>
+    <pre>
+█   █  ███   ███   ███
+██ ██ █     █   █ █   █
+█ █ █ █      ███   ███
+█   █ █     █   █ █   █
+█   █  ███   ███   ███
+    </pre>
+  </footer>
+
+  <div class="modal" id="winModal">
+    <div class="modal-content">
+      <h2>Match Found!</h2>
+      <p>You cleared the board perfectly.</p>
+      <button id="playAgainBtn">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    // =============================================
+    // CF88 - Memory Match Game
+    // Fully customizable, local storage only.
+    // =============================================
+
+    const DEFAULT_EMOJIS = ['🦊', '🌻', '🌙', '🏚️', '👁️', '🧛', '🕷️', '🌲', '🔮', '🦉', '🦇', '🗝️', '🕰️', '🕯️', '⚰️', '🧪'];
+
+    // DOM Elements
+    const boardEl = document.getElementById('gameBoard');
+    const gridSizeSelect = document.getElementById('gridSize');
+    const contentTypeSelect = document.getElementById('contentType');
+    const emojiInputGroup = document.getElementById('emojiInputGroup');
+    const customEmojiInput = document.getElementById('customEmojiInput');
+    const saveEmojisBtn = document.getElementById('saveEmojisBtn');
+    const newGameBtn = document.getElementById('newGameBtn');
+    const clearDataBtn = document.getElementById('clearDataBtn');
+    const winModal = document.getElementById('winModal');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+
+    // State
+    let cards = [];
+    let hasFlippedCard = false;
+    let lockBoard = false;
+    let firstCard, secondCard;
+    let matchedPairs = 0;
+    let totalPairs = 0;
+    let customEmojis = [];
+
+    // --- Initialization & Local Storage ---
+    function init() {
+      // Load custom emojis
+      try {
+        const storedEmojis = localStorage.getItem('cf88_custom_emojis');
+        if (storedEmojis) {
+          customEmojis = JSON.parse(storedEmojis);
+          customEmojiInput.value = customEmojis.join(' ');
+        }
+      } catch (e) { console.warn('Local storage error'); }
+
+      // Load preferences
+      const savedGrid = localStorage.getItem('cf88_grid_size');
+      const savedType = localStorage.getItem('cf88_content_type');
+      const savedTheme = localStorage.getItem('cf88_theme') || 'harvest';
+      
+      if (savedGrid) gridSizeSelect.value = savedGrid;
+      if (savedType) contentTypeSelect.value = savedType;
+      
+      document.body.setAttribute('data-theme', savedTheme);
+
+      toggleSettingsVisibility();
+      startGame();
+    }
+
+    // --- Configuration & Event Listeners ---
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.theme;
+        document.body.setAttribute('data-theme', theme);
+        localStorage.setItem('cf88_theme', theme);
+      });
+    });
+
+    gridSizeSelect.addEventListener('change', () => {
+      localStorage.setItem('cf88_grid_size', gridSizeSelect.value);
+      startGame();
+    });
+
+    contentTypeSelect.addEventListener('change', () => {
+      localStorage.setItem('cf88_content_type', contentTypeSelect.value);
+      toggleSettingsVisibility();
+      startGame();
+    });
+
+    saveEmojisBtn.addEventListener('click', () => {
+      const input = customEmojiInput.value.trim();
+      if (!input) {
+        alert('Please type some emojis or characters first.');
+        return;
+      }
+      
+      const parts = input.split(/[\s,]+/).filter(p => p.length > 0);
+      
+      if (parts.length < 4) {
+        alert('Please enter at least 4 emojis/characters so the game can create pairs.');
+        return;
+      }
+      
+      customEmojis = parts;
+      try {
+        localStorage.setItem('cf88_custom_emojis', JSON.stringify(customEmojis));
+        alert('Custom emojis saved! Starting new game...');
+        startGame();
+      } catch (e) {
+        alert('Could not save emojis to local storage.');
+      }
+    });
+
+    function toggleSettingsVisibility() {
+      if (contentTypeSelect.value === 'customEmojis') {
+        emojiInputGroup.style.display = 'flex';
+      } else {
+        emojiInputGroup.style.display = 'none';
+      }
+    }
+
+    // --- Game Logic ---
+    function startGame() {
+      hasFlippedCard = false;
+      lockBoard = false;
+      firstCard = null;
+      secondCard = null;
+      matchedPairs = 0;
+      
+      const size = parseInt(gridSizeSelect.value);
+      totalPairs = size / 2;
+      boardEl.setAttribute('data-grid', size);
+
+      let cardValues = [];
+      const type = contentTypeSelect.value;
+      
+      // Handle Custom Emojis fallback
+      if (type === 'customEmojis' && customEmojis.length === 0) {
+        // If they haven't saved emojis yet, just use default emojis as a placeholder
+        const shuffledEmojis = [...DEFAULT_EMOJIS].sort(() => Math.random() - 0.5);
+        for (let i = 0; i < totalPairs; i++) {
+          cardValues.push({ type: 'emoji', value: shuffledEmojis[i] });
+        }
+      } 
+      else if (type === 'numbers') {
+        for (let i = 1; i <= totalPairs; i++) {
+          cardValues.push({ type: 'number', value: i });
+        }
+      } else if (type === 'emojis') {
+        const shuffledEmojis = [...DEFAULT_EMOJIS].sort(() => Math.random() - 0.5);
+        for (let i = 0; i < totalPairs; i++) {
+          cardValues.push({ type: 'emoji', value: shuffledEmojis[i] });
+        }
+      } else if (type === 'customEmojis' && customEmojis.length > 0) {
+        const shuffledEmojis = [...customEmojis].sort(() => Math.random() - 0.5);
+        for (let i = 0; i < totalPairs; i++) {
+          cardValues.push({ type: 'emoji', value: shuffledEmojis[i % shuffledEmojis.length] });
+        }
+      }
+
+      cards = [...cardValues, ...cardValues];
+      shuffleArray(cards);
+      renderBoard();
+      winModal.classList.remove('show');
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function renderBoard() {
+      boardEl.innerHTML = '';
+      
+      cards.forEach((cardData, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.classList.add('card');
+        cardEl.dataset.index = index;
+        
+        const cardInner = document.createElement('div');
+        cardInner.classList.add('card-inner');
+
+        const cardFront = document.createElement('div');
+        cardFront.classList.add('card-front');
+
+        const cardBack = document.createElement('div');
+        cardBack.classList.add('card-back');
+        
+        if (cardData.type === 'number') {
+          cardBack.innerHTML = `<span class="number">${cardData.value}</span>`;
+        } else if (cardData.type === 'emoji') {
+          cardBack.innerHTML = `<span class="emoji">${cardData.value}</span>`;
+        }
+
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        cardEl.appendChild(cardInner);
+
+        cardEl.addEventListener('click', flipCard);
+        boardEl.appendChild(cardEl);
+      });
+    }
+
+    function flipCard() {
+      if (lockBoard) return;
+      if (this === firstCard) return;
+      if (this.classList.contains('matched')) return;
+      if (this.classList.contains('flipped')) return;
+
+      this.classList.add('flipped');
+
+      if (!hasFlippedCard) {
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+      }
+
+      secondCard = this;
+      checkForMatch();
+    }
+
+    function checkForMatch() {
+      const index1 = firstCard.dataset.index;
+      const index2 = secondCard.dataset.index;
+      
+      const card1 = cards[index1];
+      const card2 = cards[index2];
+
+      const isMatch = (card1.value === card2.value) && (card1.type === card2.type);
+
+      if (isMatch) {
+        disableCards();
+      } else {
+        unflipCards();
+      }
+    }
+
+    function disableCards() {
+      firstCard.classList.add('matched');
+      secondCard.classList.add('matched');
+      
+      matchedPairs++;
+      resetBoard();
+
+      if (matchedPairs === totalPairs) {
+        setTimeout(() => {
+          winModal.classList.add('show');
+        }, 600);
+      }
+    }
+
+    function unflipCards() {
+      lockBoard = true;
+      setTimeout(() => {
+        firstCard.classList.remove('flipped');
+        secondCard.classList.remove('flipped');
+        resetBoard();
+      }, 1000);
+    }
+
+    function resetBoard() {
+      [hasFlippedCard, lockBoard] = [false, false];
+      [firstCard, secondCard] = [null, null];
+    }
+
+    // --- Buttons ---
+    newGameBtn.addEventListener('click', startGame);
+    playAgainBtn.addEventListener('click', startGame);
+    
+    clearDataBtn.addEventListener('click', () => {
+      if (confirm('This will clear all custom settings from your device. Are you sure?')) {
+        localStorage.removeItem('cf88_custom_emojis');
+        localStorage.removeItem('cf88_grid_size');
+        localStorage.removeItem('cf88_content_type');
+        localStorage.removeItem('cf88_theme');
+        customEmojis = [];
+        customEmojiInput.value = '';
+        gridSizeSelect.value = '16';
+        contentTypeSelect.value = 'customEmojis';
+        document.body.setAttribute('data-theme', 'harvest');
+        toggleSettingsVisibility();
+        startGame();
+      }
+    });
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
