@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMES88</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { min-height: 100%; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #16120f;
+    background-image:
+      radial-gradient(circle at 15% 5%, rgba(200, 150, 90, 0.10), transparent 55%),
+      radial-gradient(circle at 85% 95%, rgba(140, 90, 50, 0.09), transparent 55%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.06 0 0 0 0 0.04 0 0 0 0 0.02 0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-attachment: fixed;
+    color: #f5edd6;
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ HEADER ============ */
+  header {
+    max-width: 900px;
+    margin: 0 auto 80px;
+    text-align: center;
+    animation: fadeDown 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(245, 237, 214, 0.55);
+    padding: 9px 20px;
+    border: 1px solid rgba(245, 237, 214, 0.15);
+    margin-bottom: 30px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4.5rem, 16vw, 12rem);
+    line-height: 0.82;
+    letter-spacing: 0.015em;
+    color: #f5edd6;
+    text-shadow:
+      0 0 50px rgba(212, 160, 48, 0.25),
+      0 0 120px rgba(212, 160, 48, 0.10);
+    margin-bottom: 24px;
+  }
+
+  h1 span {
+    color: #d4a030;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .sub {
+    font-size: 1rem;
+    font-style: italic;
+    color: rgba(245, 237, 214, 0.55);
+    letter-spacing: 0.02em;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: rgba(212, 160, 48, 0.4);
+    margin: 30px auto 0;
+  }
+
+  /* ============ BOARD ============ */
+  .board {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 44px 32px;
+    padding: 20px 8px;
+  }
+
+  /* ============ POSTER ============ */
+  .poster {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    background: #f5edd6;
+    color: #1a1410;
+    padding: 34px 26px 24px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border: 6px solid var(--poster-color, #1a1410);
+    box-shadow:
+      0 22px 44px rgba(0, 0, 0, 0.55),
+      0 6px 14px rgba(0, 0, 0, 0.4);
+    transition:
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: rotate(var(--tilt, 0deg));
+    cursor: pointer;
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform;
+  }
+
+  .poster:nth-child(1) { --tilt: -1.6deg; animation-delay: 0.05s; }
+  .poster:nth-child(2) { --tilt:  1.1deg; animation-delay: 0.10s; }
+  .poster:nth-child(3) { --tilt: -0.7deg; animation-delay: 0.15s; }
+  .poster:nth-child(4) { --tilt:  1.4deg; animation-delay: 0.20s; }
+  .poster:nth-child(5) { --tilt: -1.2deg; animation-delay: 0.25s; }
+  .poster:nth-child(6) { --tilt:  0.8deg; animation-delay: 0.30s; }
+  .poster:nth-child(7) { --tilt: -1.3deg; animation-delay: 0.35s; }
+
+  .poster:hover {
+    transform: rotate(0deg) translateY(-14px) scale(1.03);
+    box-shadow:
+      0 44px 80px rgba(0, 0, 0, 0.7),
+      0 10px 18px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+  }
+
+  /* Tape strips */
+  .poster::before,
+  .poster::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    width: 62px;
+    height: 26px;
+    background: rgba(220, 198, 128, 0.62);
+    border: 1px solid rgba(150, 128, 70, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .poster::before { left: 18px; transform: rotate(-8deg); }
+  .poster::after  { right: 18px; transform: rotate(6deg); }
+
+  /* Number badge */
+  .poster-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.18em;
+    color: var(--poster-color);
+    margin-bottom: 2px;
+  }
+
+  .poster-cat {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(26, 20, 16, 0.45);
+    margin-bottom: 26px;
+  }
+
+  /* Icon */
+  .poster-icon {
+    font-size: 4.8rem;
+    line-height: 1;
+    text-align: center;
+    margin: 10px 0 26px;
+    filter: drop-shadow(3px 5px 0 rgba(26, 20, 16, 0.13));
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    user-select: none;
+  }
+
+  .poster:hover .poster-icon {
+    transform: scale(1.12) rotate(-4deg);
+  }
+
+  /* Title */
+  .poster-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.3rem;
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--poster-color);
+    margin-top: auto;
+    margin-bottom: 10px;
+  }
+
+  .poster-sub {
+    font-size: 0.82rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: rgba(26, 20, 16, 0.62);
+    padding-bottom: 18px;
+    border-bottom: 2px solid rgba(26, 20, 16, 0.10);
+    margin-bottom: 16px;
+  }
+
+  /* Footer */
+  .poster-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(26, 20, 16, 0.52);
+  }
+
+  .poster-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--poster-color);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    transition: gap 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .poster:hover .poster-play {
+    gap: 12px;
+  }
+
+  /* Category colors */
+  .poster[data-cat="memory"]   { --poster-color: #7a4a1e; }
+  .poster[data-cat="reflex"]   { --poster-color: #8b1010; }
+  .poster[data-cat="word"]     { --poster-color: #1a3050; }
+  .poster[data-cat="numbers"]  { --poster-color: #1a1a1a; }
+  .poster[data-cat="sequence"] { --poster-color: #5e2b8a; }
+  .poster[data-cat="logic"]    { --poster-color: #b8541a; }
+
+  /* Coming soon */
+  .poster.soon {
+    --poster-color: #4a4a4a;
+    background: #e4dbc3;
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  .poster.soon:hover {
+    transform: rotate(var(--tilt, 0deg));
+    box-shadow:
+      0 22px 44px rgba(0, 0, 0, 0.55),
+      0 6px 14px rgba(0, 0, 0, 0.4);
+  }
+
+  .poster.soon .poster-icon {
+    opacity: 0.35;
+    transform: none;
+  }
+
+  .poster.soon:hover .poster-icon {
+    transform: none;
+  }
+
+  .poster.soon .poster-title {
+    opacity: 0.6;
+  }
+
+  .soon-stamp {
+    position: absolute;
+    top: 44%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-11deg);
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.5rem;
+    color: #8b1010;
+    border: 3px solid #8b1010;
+    padding: 6px 22px;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+    z-index: 4;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    max-width: 900px;
+    margin: 100px auto 0;
+    padding-top: 44px;
+    border-top: 1px solid rgba(245, 237, 214, 0.10);
+    text-align: center;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: rgba(245, 237, 214, 0.42);
+    line-height: 2;
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+  }
+
+  footer a {
+    color: rgba(245, 237, 214, 0.72);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(245, 237, 214, 0.3);
+    transition: color 0.3s, border-color 0.3s;
+  }
+  footer a:hover { color: #d4a030; border-color: #d4a030; }
+
+  footer .foot-mark {
+    display: block;
+    margin-top: 6px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.18em;
+    color: #d4a030;
+    opacity: 0.85;
+  }
+
+  /* ============ ANIMATIONS ============ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px) rotate(var(--tilt, 0deg)); }
+    to   { opacity: 1; transform: translateY(0)    rotate(var(--tilt, 0deg)); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    body { padding: 32px 16px 60px; }
+    header { margin-bottom: 55px; }
+    .board { gap: 36px 22px; padding: 14px 6px; }
+    .poster { padding: 28px 20px 20px; border-width: 5px; }
+    .poster-icon { font-size: 4rem; margin: 8px 0 20px; }
+    .poster-title { font-size: 1.9rem; }
+    .poster-cat { margin-bottom: 20px; }
+    .poster::before, .poster::after { width: 48px; height: 20px; top: -10px; }
+    .soon-stamp { font-size: 1.2rem; padding: 5px 16px; }
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 24px 12px 50px; }
+    header { margin-bottom: 40px; }
+    .board {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      max-width: 340px;
+    }
+    .poster { padding: 30px 22px 22px; }
+    .poster-icon { font-size: 4.4rem; }
+    .poster-title { font-size: 2.1rem; }
+    .poster::before, .poster::after { width: 52px; height: 22px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="tag">Vol. 01 &nbsp;·&nbsp; Six games &nbsp;·&nbsp; One page</div>
+    <h1>Games<span>88</span></h1>
+    <p class="sub">A small arcade. No accounts. No ads. Nothing to install. Pick a game and play — or get bored and try another.</p>
+    <div class="divider"></div>
+  </header>
+
+  <main class="board">
+
+    <a class="poster" data-cat="memory" href="CF.html">
+      <span class="poster-num">NO. 01</span>
+      <span class="poster-cat">Memory</span>
+      <span class="poster-icon">🃏</span>
+      <span class="poster-title">Card Flip</span>
+      <span class="poster-sub">Turn the cards. Find the pairs. Five themes, your own emojis.</span>
+      <span class="poster-foot">
+        <span>Solo</span>
+        <span class="poster-play">Play <span>→</span></span>
+      </span>
+    </a>
+
+    <a class="poster" data-cat="reflex" href="RPS88.html">
+      <span class="poster-num">NO. 02</span>
+      <span class="poster-cat">Reflex</span>
+      <span class="poster-icon">✂️</span>
+      <span class="poster-title">Rock<br>Paper<br>Scissors</span>
+      <span class="poster-sub">Three choices. One winner. Vintage arcade styling.</span>
+      <span class="poster-foot">
+        <span>You vs Bot</span>
+        <span class="poster-play">Play <span>→</span></span>
+      </span>
+    </a>
+
+    <a class="poster" data-cat="word" href="hangman88.html">
+      <span class="poster-num">NO. 03</span>
+      <span class="poster-cat">Word</span>
+      <span class="poster-icon">🪢</span>
+      <span class="poster-title">Hangman</span>
+      <span class="poster-sub">Guess the word. Six mistakes allowed. Two players or one.</span>
+      <span class="poster-foot">
+        <span>1 or 2</span>
+        <span class="poster-play">Play <span>→</span></span>
+      </span>
+    </a>
+
+    <a class="poster" data-cat="numbers" href="numbrel88.html">
+      <span class="poster-num">NO. 04</span>
+      <span class="poster-cat">Numbers</span>
+      <span class="poster-icon">🔢</span>
+      <span class="poster-title">Numbrle</span>
+      <span class="poster-sub">Crack the five-digit code. Five tries. Five colors.</span>
+      <span class="poster-foot">
+        <span>Solo</span>
+        <span class="poster-play">Play <span>→</span></span>
+      </span>
+    </a>
+
+    <a class="poster" data-cat="sequence" href="simon says vol2.html">
+      <span class="poster-num">NO. 05</span>
+      <span class="poster-cat">Sequence</span>
+      <span class="poster-icon">🎼</span>
+      <span class="poster-title">Simon Says</span>
+      <span class="poster-sub">Watch the pattern. Repeat it. Survive as long as you can.</span>
+      <span class="poster-foot">
+        <span>Solo</span>
+        <span class="poster-play">Play <span>→</span></span>
+      </span>
+    </a>
+
+    <a class="poster" data-cat="logic" href="sudoku88.html">
+      <span class="poster-num">NO. 06</span>
+      <span class="poster-cat">Logic</span>
+      <span class="poster-icon">🧩</span>
+      <span class="poster-title">Sudoku</span>
+      <span class="poster-sub">Fill every row, column, and square. Four cartoon themes.</span>
+      <span class="poster-foot">
+        <span>Solo</span>
+        <span class="poster-play">Play <span>→</span></span>
+      </span>
+    </a>
+
+    <div class="poster soon" data-cat="soon">
+      <span class="poster-num">NO. 07</span>
+      <span class="poster-cat">Coming</span>
+      <span class="poster-icon">✨</span>
+      <span class="poster-title">Next<br>Game</span>
+      <span class="poster-sub">Something new is being made. Watch this space.</span>
+      <span class="poster-foot">
+        <span>Soon</span>
+        <span class="poster-play">—</span>
+      </span>
+      <span class="soon-stamp">Coming Soon</span>
+    </div>
+
+  </main>
+
+  <footer>
+    <div>© 2026 <a href="mailto:mohamed005cheikh@gmail.com">mohamed005cheikh@gmail.com</a> · by MC88</div>
+    <span class="foot-mark">GAMES88</span>
+  </footer>
+
+</body>
+</html>
