@@ -181,9 +181,9 @@ Non. Le bouton New Game est toujours disponible, la modale propose toujours Play
 
 📞 Une question, une idée, un bug ?
 
-https://img.shields.io/badge/Email-mohamed005cheikh@gmail.com-d14836?style=flat-square&logo=gmail&logoColor=white
-https://img.shields.io/badge/WhatsApp-+222_30_73_64_75-25D366?style=flat-square&logo=whatsapp&logoColor=white
-https://img.shields.io/badge/GitHub-mohamed005cheikh--rgb-181717?style=flat-square&logo=github
+[https://img.shields.io/badge/Email-mohamed005cheikh@gmail.com-d14836?style=flat-square&logo=gmail&logoColor=white}
+[https://img.shields.io/badge/WhatsApp-+222_30_73_64_75-25D366?style=flat-square&logo=whatsapp&logoColor=white]
+[https://img.shields.io/badge/GitHub-MC--MC88-181717?style=flat-square&logo=github]
 
 <br />
 
